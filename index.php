@@ -6,20 +6,26 @@ Stampiamo delle card contenenti i dettagli dei prodotti, come immagine, titolo, 
  icona della categoria ed il tipo di articolo che si sta visualizzando (prodotto, cibo, gioco, cuccia). -->
 
  <?php 
-    require_once __DIR__ . '/Models/Shop.php';
+    require_once __DIR__ . '/Models/Product.php';
+    require_once __DIR__ . '/Models/Food.php';
     require_once __DIR__ . '/Models/Categories.php';
     
 
 
     $dog = new Categories ('cane');
     $cat = new Categories ('gatto');
-    
-    $product1 = new Shop ('Gunzaglio', 'Prodotto', 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Non porro inventore itaque voluptates cum ea atque unde distinctio corrupti, amet at veritatis? In illum quis ducimus laborum nobis tempora nostrum.','https://fastly.picsum.photos/id/1009/300/200.jpg?hmac=ylPtCmzmDQqOyCKacjGk30nzAn7JjMT66-xkdS91kig' ,'9.90', $dog );
-    $product2 = new Shop ('Sabbia', 'Prodotto', 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Non porro inventore itaque voluptates cum ea atque unde distinctio corrupti, amet at veritatis? In illum quis ducimus laborum nobis tempora nostrum.','https://fastly.picsum.photos/id/1009/300/200.jpg?hmac=ylPtCmzmDQqOyCKacjGk30nzAn7JjMT66-xkdS91kig' ,'7.80', $cat);
-    $product3 = new Shop ('Peluche', 'Gioco', 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Non porro inventore itaque voluptates cum ea atque unde distinctio corrupti, amet at veritatis? In illum quis ducimus laborum nobis tempora nostrum.','https://fastly.picsum.photos/id/1009/300/200.jpg?hmac=ylPtCmzmDQqOyCKacjGk30nzAn7JjMT66-xkdS91kig' ,'11.70', $dog);
-    $product4 = new Shop ('Crocchette', 'Cibo', 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Non porro inventore itaque voluptates cum ea atque unde distinctio corrupti, amet at veritatis? In illum quis ducimus laborum nobis tempora nostrum.','https://fastly.picsum.photos/id/1009/300/200.jpg?hmac=ylPtCmzmDQqOyCKacjGk30nzAn7JjMT66-xkdS91kig'  ,'54.10', $cat);
 
-    $products = [$product1, $product2, $product3, $product4];
+    $food1 = new Food ('Crocchette', 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Non porro inventore itaque voluptates cum ea atque unde distinctio corrupti, amet at veritatis? In illum quis ducimus laborum nobis tempora nostrum.','https://fastly.picsum.photos/id/1009/300/200.jpg?hmac=ylPtCmzmDQqOyCKacjGk30nzAn7JjMT66-xkdS91kig'  ,'54.10', $cat, ['salmone', 'riso']);
+    $food1->setNameType('Cibo');
+    
+    $product1 = new Product ('Gunzaglio', 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Non porro inventore itaque voluptates cum ea atque unde distinctio corrupti, amet at veritatis? In illum quis ducimus laborum nobis tempora nostrum.','https://fastly.picsum.photos/id/1009/300/200.jpg?hmac=ylPtCmzmDQqOyCKacjGk30nzAn7JjMT66-xkdS91kig' ,'9.90', $dog );
+    $product1->setNameType('Prodotto');
+    $product2 = new Product ('Sabbia', 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Non porro inventore itaque voluptates cum ea atque unde distinctio corrupti, amet at veritatis? In illum quis ducimus laborum nobis tempora nostrum.','https://fastly.picsum.photos/id/1009/300/200.jpg?hmac=ylPtCmzmDQqOyCKacjGk30nzAn7JjMT66-xkdS91kig' ,'7.80', $cat );
+    $product2->setNameType('Prodotto');
+    $product3 = new Product ('Peluche', 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Non porro inventore itaque voluptates cum ea atque unde distinctio corrupti, amet at veritatis? In illum quis ducimus laborum nobis tempora nostrum.','https://fastly.picsum.photos/id/1009/300/200.jpg?hmac=ylPtCmzmDQqOyCKacjGk30nzAn7JjMT66-xkdS91kig' ,'11.70', $dog );
+    $product3->setNameType('Gioco');
+
+    $products = [$product1, $product2, $product3, $food1];
    
 
  ?>
@@ -39,16 +45,23 @@ Stampiamo delle card contenenti i dettagli dei prodotti, come immagine, titolo, 
      <main>
         <section class="container mt-5 d-flex">
             <?php foreach ($products as $product) { ?>
+                <?php
+                    $className = get_class($product);
+                ?>
                 <div class="card me-4" style="width: 18rem;">
                     <img src="<?php echo $product->image ?>" class="card-img-top overflow-hidden" alt="...">
                     <div class="card-body">
-                        <h5 class="card-title"><?php echo $product->product ?></h5>
+                        <h5 class="card-title"><?php echo $product->name ?></h5>
                         <div class="d-flex">
                             <div class="me-2"><?php echo $product->category->setIcon() ?> </div>
-                            <div> <?php echo $product->type  ?></div>
+                            <div> <?php echo $product->getNameType()  ?></div>
                         </div>
                         <p class="card-text"> <?php  echo $product->description ?></p>
+                        <?php if($className === 'Food') { ?>
+                            <div><?php echo implode(', ', $product->ingredients); ?></div>
+                        <?php } ?>
                         <div class="ms-2" >€ <?php echo $product->price  ?></div>
+
                     </div>
                 </div>
             <?php } ?>
